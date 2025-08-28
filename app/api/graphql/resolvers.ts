@@ -1,5 +1,6 @@
 import googleOAuth2Client from "@/lib/OAuthClient"; "@/lib/OAuthClient";
 import prismaClient from "@/lib/prismaClient";
+import { createGraphQLError } from "graphql-yoga";
 
 const resolvers = {
     Query: {
@@ -13,25 +14,43 @@ const resolvers = {
             })
         },
 
-        comments: () => {
-            return prismaClient.comment.findMany({
-                where: { parentId: null },
-                include: {
-                    author: true,
-                    replies: true
-                },
-            })
+        comments: async () => {
+            try {
+                const res = await prismaClient.comment.findMany({
+                    where: { parentId: null },
+                    include: { author: true, replies: true },
+                })
+
+                if (!Array.isArray(res)) {
+                    return createGraphQLError("Database responded no array")
+                }
+
+                return res
+            } catch (error) {
+                return createGraphQLError("Internal Server Error + " + error)
+            }
         },
 
-        comment: (_: unknown, args: {
+        comment: async (_: unknown, args: {
             id: string
         }) => {
-            return prismaClient.comment.findFirst({
-                where: {
-                    id: args.id
-                },
-                include: { author: true, replies: true, parent: true }
-            })
+            try {
+
+                if (!args.id) {
+                    return createGraphQLError("No ID provided")
+                }
+
+                const res = await prismaClient.comment.findFirst({
+                    where: {
+                        id: args.id
+                    },
+                    include: { author: true, replies: true }
+                })
+
+                return res
+            } catch (error) {
+                return createGraphQLError("Internal Server Error + " + error)
+            }
         },
 
         generateGoogleAuthLink: async () => {

@@ -5,7 +5,9 @@ export const createCommentQuery = `
             content
             createdAt
             updatedAt
-            author
+            author {
+                name
+            }
         }
     }
 `

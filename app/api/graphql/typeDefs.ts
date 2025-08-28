@@ -24,6 +24,7 @@ type Comment {
   author: User!
   parent: Comment
   replies: [Comment!]
+  parentId: String
 }
 
 type Query {

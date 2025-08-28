@@ -5,11 +5,9 @@ export const getAllCommentsQuery = `
             content
             createdAt
             updatedAt
+            parentId
             author {
                 name
-                id
-            }
-            parent {
                 id
             }
             replies {
@@ -27,11 +25,9 @@ export const getCommentByIdQuery = `
             content
             createdAt
             updatedAt
+            parentId
             author {
                 name
-                id
-            }
-            parent {
                 id
             }
             replies {

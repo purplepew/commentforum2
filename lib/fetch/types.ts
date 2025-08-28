@@ -20,14 +20,14 @@ export type IComment = {
     createdAt: Date,
     updatedAt: Date,
     replies: IReplies,
-    parent: IComment | null,
     author: IUser,
+    parentId: string | null
 }
 
-export type IReplies = [{
+export type IReplies = {
     id: string,
-    replies: IReplies
-} | null]
+    content: string
+}[]
 
 export type GoogleOAuthLinkResponse = {
     data: {
